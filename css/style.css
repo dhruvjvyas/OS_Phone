@@ -601,9 +601,9 @@ button:focus-visible, input:focus-visible {
 .ai-pill__mark { width: 40px; height: 40px; display: block; border-radius: 50%; flex-shrink: 0; }
 
 /* ---- speak OR type ----
-   The ghost layer sits exactly under the input: the part you've typed is
-   rendered transparent, the part the phone has decided you meant is dim.
-   Both layers MUST share font metrics or the suggestion drifts out of line. */
+   The completion is written straight into the field and left selected, the
+   way a browser address bar does it. Nothing is "offered": the sentence is
+   simply already there, and disagreeing costs you a keystroke. */
 .ai-field {
   position: relative;
   flex: 1;
@@ -612,34 +612,23 @@ button:focus-visible, input:focus-visible {
   display: flex;
   align-items: center;
 }
-.ai-ghost,
 .ai-input {
+  width: 100%;
   font-family: inherit;
   font-size: 17px;
   font-weight: 400;
   line-height: 26px;
-  letter-spacing: normal;
   padding: 0;
   border: 0;
-}
-.ai-ghost {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  white-space: pre;
-  overflow: hidden;
-  color: rgba(255, 255, 204, 0.42);
-}
-.ai-ghost__typed { color: transparent; }
-.ai-input {
-  position: relative;
-  width: 100%;
   background: none;
   color: var(--osp-cream);
   caret-color: var(--osp-cream);
   outline: none;
 }
 .ai-input::placeholder { color: rgba(255, 255, 204, 0.5); }
+/* the words the phone put in your mouth, highlighted */
+.ai-input::selection { background: rgba(255, 255, 204, 0.28); color: var(--osp-cream); }
+.ai-input::-moz-selection { background: rgba(255, 255, 204, 0.28); color: var(--osp-cream); }
 
 .ai-icon-btn {
   width: 28px;
@@ -692,6 +681,14 @@ button:focus-visible, input:focus-visible {
   opacity: 0.9;
 }
 .ai-sheet__you:empty { display: none; }
+/* the receipt: it wrote your ending and you never touched it */
+.ai-you__note {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.65;
+}
 
 .ai-sheet__answer {
   color: var(--white);

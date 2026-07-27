@@ -232,8 +232,6 @@
       <img class="ai-pill__mark" src="assets/osp-logo.svg" alt="" aria-hidden="true" />
 
       <div class="ai-field">
-        <!-- ghost layer: the typed part is transparent, the presumed rest is dim -->
-        <div class="ai-ghost" id="ai-ghost" aria-hidden="true"><span class="ai-ghost__typed"></span><span class="ai-ghost__rest"></span></div>
         <input
           class="ai-input"
           id="ai-input"
@@ -254,8 +252,8 @@
       </button>
     </div>
 
-    <!-- tapping the suggestion accepts it (there is no Tab key on a phone) -->
-    <button class="ai-accept" id="ai-accept" hidden>Tap to accept what you were going to say</button>
+    <!-- the phone has already typed the rest for you; this is how you disagree -->
+    <button class="ai-accept" id="ai-accept" hidden>Delete what Oversmart AI added</button>
   </section>
 
   <!-- Deadpan system toast -->

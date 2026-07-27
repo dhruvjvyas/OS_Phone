@@ -229,84 +229,125 @@ const OversmartAI = (() => {
 
   /* ---------------- typing: the phone finishes your sentence ------------- */
 
-  let pendingCompletion = null;
+  /* True inline completion: the rest of the sentence is written INTO the
+     field and left selected, so the next keystroke overwrites it. Nothing is
+     offered — the words are simply already in your mouth. `autoFrom` marks
+     where the phone's words begin, which is how we know whether you ever
+     agreed to them. */
+  let autoFrom = -1;
 
-  function paintGhost() {
+  function hasUnclaimedCompletion() {
     const input = $("ai-input");
-    const ghost = $("ai-ghost");
+    return autoFrom >= 0 && input.selectionStart !== input.selectionEnd;
+  }
+
+  function clearAuto() {
+    autoFrom = -1;
+    $("ai-accept").hidden = true;
+  }
+
+  function completeInline(deleting) {
+    const input = $("ai-input");
     const typed = input.value;
-    const accept = $("ai-accept");
 
-    /* only presume while the caret is at the end — otherwise the ghost
-       would sit in the middle of what you're editing */
-    const atEnd = input.selectionStart === typed.length;
-    pendingCompletion = atEnd ? Autocomplete.completionFor(typed) : null;
+    /* never fight a deletion — otherwise the sentence is unremovable, which
+       is a bug, not a joke */
+    if (deleting) { clearAuto(); return; }
+    /* only presume from the end of the line */
+    if (input.selectionStart !== typed.length) { clearAuto(); return; }
 
-    ghost.querySelector(".ai-ghost__typed").textContent = typed;
-    ghost.querySelector(".ai-ghost__rest").textContent = pendingCompletion
-      ? pendingCompletion.rest
-      : "";
-    /* keep the ghost scrolled in step with the input on long sentences */
-    ghost.scrollLeft = input.scrollLeft;
+    const c = Autocomplete.completionFor(typed);
+    if (!c || !c.rest) { clearAuto(); return; }
 
-    accept.hidden = !pendingCompletion;
+    input.value = c.full;
+    /* select the part it decided on: keep typing and you overwrite it,
+       press → or End and you've accepted it by omission */
+    try {
+      input.setSelectionRange(typed.length, c.full.length);
+      autoFrom = typed.length;
+      $("ai-accept").hidden = false;
+    } catch {
+      /* some soft keyboards refuse programmatic selection — the text is
+         still in the box, which is the point */
+      autoFrom = typed.length;
+      $("ai-accept").hidden = false;
+    }
   }
 
-  function acceptCompletion() {
-    if (!pendingCompletion) return false;
+  function rejectCompletion() {
     const input = $("ai-input");
-    input.value = pendingCompletion.full;
+    if (autoFrom < 0) return;
+    input.value = input.value.slice(0, autoFrom);
     input.setSelectionRange(input.value.length, input.value.length);
-    paintGhost();
-    setStatus("Completed for you.");
-    return true;
+    clearAuto();
+    setStatus("Removed. Oversmart AI will suggest it again.");
+    input.focus();
   }
 
-  function submitTyped({ assume = false } = {}) {
+  function submitTyped() {
     const input = $("ai-input");
-    /* the pattern executing: Enter takes the phone's sentence, not yours */
-    const assumed = assume && pendingCompletion ? pendingCompletion.full : null;
-    const text = (assumed || input.value).trim();
+    const assumed = hasUnclaimedCompletion();
+    const text = input.value.trim();
     if (!text) return;
 
-    $("ai-you").textContent = text;
+    /* The admission has to live on the question, not in the status line —
+       the request lifecycle overwrites the status a moment later, and this
+       is the one line that shows the pattern executed. */
+    const you = $("ai-you");
+    you.textContent = text;
+    if (assumed) {
+      const note = document.createElement("span");
+      note.className = "ai-you__note";
+      note.textContent = "You were going to say that. Oversmart AI finished it.";
+      you.appendChild(note);
+    }
+
     input.value = "";
-    pendingCompletion = null;
-    paintGhost();
+    clearAuto();
     input.blur();
     submit(text);
-    if (assumed) setStatus("You were going to say that. Oversmart AI finished it.");
   }
 
   function bindTyping() {
     const input = $("ai-input");
     if (!input) return;
 
-    input.addEventListener("input", paintGhost);
-    input.addEventListener("click", paintGhost);
-    input.addEventListener("scroll", () => {
-      $("ai-ghost").scrollLeft = input.scrollLeft;
+    let lastKeyWasDelete = false;
+
+    input.addEventListener("input", (e) => {
+      /* inputType is the reliable signal across soft keyboards; the keydown
+         fallback covers browsers that omit it */
+      const deleting = e.inputType
+        ? e.inputType.startsWith("delete")
+        : lastKeyWasDelete;
+      lastKeyWasDelete = false;
+      completeInline(deleting);
     });
 
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Tab" || (e.key === "ArrowRight" && input.selectionStart === input.value.length)) {
-        if (pendingCompletion) {
-          e.preventDefault();
-          acceptCompletion();
-        }
-        return;
-      }
+      lastKeyWasDelete = e.key === "Backspace" || e.key === "Delete";
       if (e.key === "Enter") {
         e.preventDefault();
-        submitTyped({ assume: true });
+        submitTyped();
+      }
+      /* Tab accepts by collapsing the selection — → and End already do this
+         natively, so they need no handler */
+      if (e.key === "Tab" && hasUnclaimedCompletion()) {
+        e.preventDefault();
+        input.setSelectionRange(input.value.length, input.value.length);
+        clearAuto();
+        setStatus("Completed for you.");
       }
     });
 
-    $("ai-accept").addEventListener("click", () => {
-      acceptCompletion();
-      input.focus();
+    /* tapping elsewhere in the field is not agreement, but it does end the
+       selection — stop claiming the sentence is still "unclaimed" */
+    input.addEventListener("click", () => {
+      if (!hasUnclaimedCompletion()) clearAuto();
     });
-    $("ai-send").addEventListener("click", () => submitTyped({ assume: true }));
+
+    $("ai-accept").addEventListener("click", rejectCompletion);
+    $("ai-send").addEventListener("click", submitTyped);
     $("ai-mic").addEventListener("click", onPill);
   }
 
@@ -389,8 +430,7 @@ const OversmartAI = (() => {
     const input = $("ai-input");
     if (input) {
       input.value = "";
-      pendingCompletion = null;
-      paintGhost();
+      clearAuto();
     }
     setStatus("Speak, or type — Oversmart AI already knows how it ends.");
   }

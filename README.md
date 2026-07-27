@@ -41,13 +41,16 @@ This is the v1 shell: **Lock → State Your Reason → Home**, built as a fullsc
 
 The Ask bar is no longer a single button — it's a text field with a mic beside it, so the sheet demos with or without a working microphone (useful in a room where speaking aloud isn't practical).
 
-Typing is where the **autocomplete** dark pattern executes. `Autocomplete` at the top of `js/oversmart-ai.js` holds the sentence bank; every completion is something the phone would rather you were asking — more self-doubt, more dependence, more time on the device. Mechanics:
+Typing is where the **autocomplete** dark pattern executes. `Autocomplete` at the top of `js/oversmart-ai.js` holds the sentence bank; every completion is something the phone would rather you were asking — more self-doubt, more dependence, more time on the device.
 
-- It completes after **one character**, not three — the point is that it presumes before you've committed to anything.
-- The suggestion renders as ghost text on a layer under the input. The typed portion is transparent and both layers share font metrics, so the completion sits exactly where your next keystroke would land. (If you restyle the bar, change **both** `.ai-ghost` and `.ai-input` or the suggestion drifts out of alignment.)
-- **Tab**, **→**, or the tap-target below the bar accepts it. Your own capitalisation is preserved — only the remainder is appended, so accepting doesn't rewrite what you wrote.
-- **Enter submits the phone's sentence, not yours**, and says so afterwards ("You were going to say that. Oversmart AI finished it."). That's the pattern executing rather than being illustrated.
-- It stops presuming while the caret is mid-string (it would otherwise suggest into the middle of an edit), and once you've accepted a complete sentence it lets it stand. Type something it doesn't recognise and it still finishes it — generically, and with total confidence.
+**Nothing is suggested. The sentence is written straight into the box.** Type `w` and the field already reads *"what is everyone else doing right now"*, with everything after your `w` selected (the way a browser address bar completes a URL). The words are in your mouth before you've decided on them; disagreeing is what costs a keystroke.
+
+- It completes after **one character** — the point is that it presumes before you've committed to anything.
+- The auto-written part is **selected**, so typing simply overwrites it and the phone immediately guesses again. Highlight colour is `.ai-input::selection`.
+- **Backspace genuinely deletes** (deletion is detected via `InputEvent.inputType`, with a keydown fallback for soft keyboards that omit it). Without that guard the sentence would be unremovable — a bug, not a joke. There's also a **"Delete what Oversmart AI added"** button that strips only the phone's words and leaves yours.
+- **Tab** / **→** / **End** accept it by collapsing the selection.
+- **Enter submits whatever is in the box** — which, if you never touched the completion, is the phone's sentence rather than yours. When that happens the question carries a receipt underneath: *"You were going to say that. Oversmart AI finished it."* Accept it deliberately (Tab) or type it out yourself and no receipt appears — the phone only takes credit when it actually did the deciding.
+- It stops presuming while the caret is mid-string, and once a complete sentence is in the box it lets it stand. Type something it doesn't recognise and it still finishes it — generically, and with total confidence.
 
 ## Voice on the reason screen
 
