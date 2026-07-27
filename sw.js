@@ -3,7 +3,7 @@
    the live serverless function each time). */
 
 /* bump the cache name whenever the shell changes, or clients keep the old one */
-const CACHE = "osp-shell-v5";
+const CACHE = "osp-shell-v6";
 const SHELL = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const SHELL = [
   "./js/timewords.js",
   "./js/store.js",
   "./js/unlock.js",
+  "./js/brightness.js",
   "./js/overlays.js",
   "./js/oversmart-ai.js",
   "./js/app.js",

@@ -143,8 +143,9 @@ const Overlays = (() => {
     });
   });
 
-  /* vertical sliders: brightness one really dims the OS.
-     This is also the mount point for the brightness-by-battery feature. */
+  /* vertical sliders: the brightness one really dims the OS — but only for a
+     moment. Brightness belongs to the battery now (js/brightness.js), so the
+     slider is allowed to move and is then quietly overruled. */
   document.querySelectorAll(".vslider").forEach((slider) => {
     const fill = slider.querySelector(".vslider__fill");
     let dragging = false;
@@ -157,8 +158,7 @@ const Overlays = (() => {
       );
       fill.style.height = pct * 100 + "%";
       if (slider.dataset.slider === "brightness") {
-        /* dim the whole surface: 0.35..1.0 */
-        document.body.style.filter = `brightness(${0.35 + pct * 0.65})`;
+        Brightness.userOverride(pct);
       }
     }
 

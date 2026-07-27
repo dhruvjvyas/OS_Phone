@@ -17,7 +17,8 @@ This is the v1 shell: **Lock → State Your Reason → Home**, built as a fullsc
 | Real battery % | Battery API where available; falls back to the static 75%. |
 | Offline + fullscreen | Service worker caches the shell; manifest requests `display: fullscreen`. |
 | Notification shade | Pull down from top-left (or tap the pill). "You might have a new notification" — nothing resolves. Header shows **real** minutes of usage today. |
-| Quick settings | Pull down from top-right. Tile grid + two vertical sliders; the brightness slider **really dims the OS** (CSS `brightness()` filter on `body`) — this is the mount point for brightness-by-battery. |
+| Quick settings | Pull down from top-right. Tile grid + two vertical sliders. The brightness slider really dims the OS — and is then overruled by the battery. |
+| Brightness by battery | Real. Brightness *is* the percentage: 100% → undimmed, 0% → 32% brightness. Tap any battery readout to run a visible sweep. See below. |
 | App drawer as feed | Swipe up on Home. Apps rendered as social posts: hero, like, trash, open-arrow, "Last checked Xm ago" (live once opened this session). Trash: "cannot be uninstalled at this time." |
 | Oversmart AI sheet | Center dock button or the search bar → dissolve overlay. **Speak or type** — see below. |
 | Autocomplete ("it knows what you want to say") | Real. Type one character into the Ask bar and the phone finishes the sentence in dim ghost text. Accept with Tab / → / the button. Press Enter and it submits **its** sentence, not yours. |
@@ -51,6 +52,16 @@ Typing is where the **autocomplete** dark pattern executes. `Autocomplete` at th
 - **Tab** / **→** / **End** accept it by collapsing the selection.
 - **Enter submits whatever is in the box** — which, if you never touched the completion, is the phone's sentence rather than yours. When that happens the question carries a receipt underneath: *"You were going to say that. Oversmart AI finished it."* Accept it deliberately (Tab) or type it out yourself and no receipt appears — the phone only takes credit when it actually did the deciding.
 - It stops presuming while the caret is mid-string, and once a complete sentence is in the box it lets it stand. Type something it doesn't recognise and it still finishes it — generically, and with total confidence.
+
+## Brightness by battery
+
+Battery saver taken literally and taken all the way: brightness doesn't *react* to the battery, it **is** the battery. `js/brightness.js` owns both the percentage readout and the dimming, so the two can't drift apart — the number on screen and the darkness of the screen are the same value. 100% battery → undimmed; 0% → 32% brightness, never fully black, because the phone still wants you to keep trying.
+
+**Demoing it:** the level drains on its own (1% / 8s), but **tap any battery percentage** to run a fast sweep down to 5% — the screen visibly darkens as the number falls. Tap again to sweep back up ("Charging. The screen is permitted to brighten."). On a device that exposes the Battery API the starting level is your real one.
+
+**The slider is allowed to move, then overruled.** Drag brightness in quick settings and it works — for 2.2 seconds. Then the battery takes it back with *"Brightness is managed to match your battery."* That's the feature, not a bug: there's no toggle, it's just how the screen behaves now. To disable it, set `RESPECT_USER = true` at the top of `js/brightness.js`.
+
+**Implementation note:** the dimming is a black overlay (`#screen-dimmer`, z-index 100 so it dims the toast too), deliberately **not** `filter: brightness()` on `<body>`. A filter on an ancestor creates a containing block, which breaks every `position: fixed` screen and overlay in this app and interferes with the `backdrop-filter` glass. An opacity layer has neither problem.
 
 ## Voice on the reason screen
 
@@ -89,7 +100,7 @@ Then on the second Android phone, open the URL in Chrome → menu → **Add to H
 - **Notification-about-notification loop** → `sw.js` already handles `notificationclick` (opens the app → which is locked → which demands a reason). Schedule local notifications from `app.js` via `registration.showNotification()` after requesting permission from the notif pill.
 - **Exit friction / closing apps** → dock buttons in `app.js` are stubs; each "app" becomes a screen whose close flow costs more than its open flow.
 - **Honest toggles (détournement)** → build as a Settings screen; it's copy-driven, so it's cheap to add.
-- **Brightness-by-battery** → CSS `filter: brightness()` on the root, driven by the Battery API level.
+- ~~Brightness-by-battery~~ → **done**, see `js/brightness.js`.
 - **Home screen re-arrangement "for efficiency"** → shuffle dock/app-grid order on an interval; announce it with a toast.
 - **Oversmart AI search** → `ai-search` stub; wire to whatever the AI-Overviews-anchored version of the feature becomes.
 - **Record all calls / autocomplete** → fake app surfaces inside the shell.
@@ -103,6 +114,7 @@ oversmart/
 ├── js/
 │   ├── app.js            state machine, clocks, put-down detection
 │   ├── unlock.js         mic + speech interrogation
+│   ├── brightness.js     brightness-by-battery (owns the % readout too)
 │   ├── store.js          the dossier (localStorage)
 │   └── timewords.js      digits → words
 ├── sw.js                 offline shell + notification plumbing

@@ -352,6 +352,20 @@ button:focus-visible, input:focus-visible {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ---------- brightness-by-battery ----------
+   Above everything, including the toast: a dimmed screen dims the whole
+   screen. Deliberately NOT `filter: brightness()` on <body> — a filter there
+   creates a containing block and breaks every position:fixed screen. */
+.screen-dimmer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms linear;
+}
+
 /* ---------- motion hygiene ---------- */
 
 @media (prefers-reduced-motion: reduce) {

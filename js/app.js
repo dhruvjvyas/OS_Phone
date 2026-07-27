@@ -48,20 +48,14 @@
   tick();
   setInterval(tick, 5000);
 
-  /* ---------- battery (real, when the device allows) ---------- */
+  /* ---------- battery + brightness ----------
+     Brightness owns the readout now: the percentage and the dimming are the
+     same number, so they can't drift apart. See js/brightness.js. */
 
-  function paintBattery(level) {
-    const pct = Math.round(level * 100) + "%";
-    document.querySelectorAll("[data-battery]").forEach((el) => {
-      el.textContent = pct;
-    });
-  }
-  if (navigator.getBattery) {
-    navigator.getBattery().then((b) => {
-      paintBattery(b.level);
-      b.addEventListener("levelchange", () => paintBattery(b.level));
-    });
-  }
+  Brightness.init();
+
+  /* modules raise toasts through the OS rather than reaching into it */
+  document.addEventListener("os:toast", (e) => toast(e.detail));
 
   /* ---------- lock screen ---------- */
 
