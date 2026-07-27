@@ -77,6 +77,9 @@
       <input type="text" id="reason-input" placeholder="Type your reason" autocomplete="off" />
       <button type="submit">Submit for review</button>
     </form>
+
+    <!-- a fresh tap = a fresh user gesture = a fresh chance at the mic -->
+    <button class="reason-retry" id="reason-retry" hidden>Try speaking again</button>
   </section>
 
   <!-- ============ HOME SCREEN ============ -->
@@ -102,7 +105,7 @@
       </div>
 
       <button class="ai-search" id="ai-search">
-        <svg viewBox="0 0 24 24" class="ai-search__mic"><path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 12a5.5 5.5 0 0 0 11 0M12 17.5V20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <img class="ai-search__mark" src="assets/osp-logo.svg" alt="" aria-hidden="true" />
         <span>Search with Oversmart AI</span>
       </button>
     </div>
@@ -115,7 +118,7 @@
         <svg viewBox="0 0 24 24"><path d="M6.6 4.5h2.6l1.3 3.6-1.8 1.4a12 12 0 0 0 5.8 5.8l1.4-1.8 3.6 1.3v2.6a1.7 1.7 0 0 1-1.8 1.7A14.9 14.9 0 0 1 4.9 6.3a1.7 1.7 0 0 1 1.7-1.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
       </button>
       <button class="dock__app dock__app--osp" data-app="oversmart" aria-label="Oversmart">
-        <span class="dock__osp-dot"></span>
+        <img class="dock__osp-mark" src="assets/osp-logo.svg" alt="" aria-hidden="true" />
       </button>
       <button class="dock__app dock__app--green" data-app="chat" aria-label="Messages">
         <svg viewBox="0 0 24 24"><path d="M12 4.5a7.5 7.5 0 0 0-6.4 11.4L4.5 19.5l3.8-1A7.5 7.5 0 1 0 12 4.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
@@ -225,6 +228,7 @@
       <p class="ai-sheet__status" id="ai-status">Tap to speak. Oversmart AI is listening for what you meant.</p>
     </div>
     <button class="ai-pill" id="ai-pill">
+      <img class="ai-pill__mark" src="assets/osp-logo.svg" alt="" aria-hidden="true" />
       <span id="ai-pill-label">Ask Oversmart AI</span>
       <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 12a5.5 5.5 0 0 0 11 0M12 17.5V20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>

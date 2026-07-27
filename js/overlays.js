@@ -41,13 +41,19 @@ const Overlays = (() => {
 
   let start = null;
   let committed = false;
+  let suppressClick = false;
 
   document.addEventListener(
     "pointerdown",
     (e) => {
       committed = false;
-      /* ignore drags that begin on interactive controls or scrollable feed */
-      if (e.target.closest("button, input, a, .drawer__feed, .vslider")) {
+      /* Only ignore surfaces that own their own drag (text entry, the
+         scrollable feed, the sliders). Buttons must NOT be excluded here:
+         the natural swipe-up for the drawer starts at the bottom of the
+         screen, which is exactly where the dock buttons are — excluding
+         them is what made the gesture feel dead. A tap on a button never
+         crosses the movement threshold, so its click still works. */
+      if (e.target.closest("input, a, .drawer__feed, .vslider")) {
         start = null;
         return;
       }
@@ -68,6 +74,9 @@ const Overlays = (() => {
       if (Math.abs(dy) < THRESHOLD || Math.abs(dx) > Math.abs(dy)) return;
 
       committed = true;
+      /* the drag may have begun on a button — don't let the browser's
+         click fire behind it once the finger lifts */
+      suppressClick = true;
       const fromTop = start.y <= TOP_ZONE;
       const fromLeft = start.x < window.innerWidth / 2;
 
@@ -103,6 +112,19 @@ const Overlays = (() => {
       },
       { passive: true }
     )
+  );
+
+  /* Swallow exactly one click after a committed drag, so swiping up off the
+     dock opens the drawer without also firing the app underneath. */
+  document.addEventListener(
+    "click",
+    (e) => {
+      if (!suppressClick) return;
+      suppressClick = false;
+      e.stopPropagation();
+      e.preventDefault();
+    },
+    true // capture: get in before any element's own handler
   );
 
   /* Escape closes overlays (desktop dev nicety) */

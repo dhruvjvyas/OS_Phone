@@ -25,14 +25,26 @@ This is the v1 shell: **Lock → State Your Reason → Home**, built as a fullsc
 
 - **Pull down, top-left** → notification shade
 - **Pull down, top-right** → quick settings
-- **Swipe up on Home** → app drawer feed
+- **Swipe up on Home** → app drawer feed (gesture only — there is no tap target. The drag may *start on a dock button*: buttons are no longer excluded from gesture tracking, and the click that would otherwise fire is swallowed after a committed drag)
 - **Vertical drag on any open overlay** → close (Esc also works on desktop)
 - **Tap "You may have notifications"** → notification shade
 - **Center dock button / search bar** → Oversmart AI sheet
 
-## Wallpaper
+## Wallpaper & the mark
 
-Drop your Figma wallpaper export at `assets/wallpaper.jpg` (the Ama Dablam photo). Until then a dusk gradient stands in — the CSS layers the image over the gradient, so adding the file just works.
+`assets/wallpaper.jpg` (the Ama Dablam photo) and `assets/osp-logo.svg` are both in place. Every swipe-in surface — app drawer, notification shade, quick settings — is frosted glass over that wallpaper: `backdrop-filter: blur() saturate()` plus a scrim, tuned from four tokens at the top of `style.css` (`--glass-blur`, `--glass-fill`, `--glass-scrim`, `--glass-edge`). Panel fills are deliberately kept high enough that the dark type on the notification pills and app cards stays legible against the dark half of the photo.
+
+`osp-logo.svg` is the real mark and carries its own colours — `#000033` field, `#FFFFCC` spiral — so it's dropped in as `<img>` and never tinted. It appears in three places: the home search pill, the centre dock button, and the Ask Oversmart AI pill. The same two colours are exposed as `--osp-navy` / `--osp-cream` for anything else that needs them.
+
+## Voice on the reason screen
+
+Speech capture is the one mechanic most likely to look broken, so the flow is defensive about three real browser constraints (all commented in `js/unlock.js`):
+
+1. **The gesture chain.** `SpeechRecognition.start()` now runs *synchronously* inside the tap that opens the screen. Previously `await getUserMedia()` ran first, which spends the user activation — Chrome then rejects `start()` with `not-allowed`, and voice silently never began. The waveform mic is opened ~350ms *after* recognition instead.
+2. **Mic contention.** Holding a `getUserMedia` stream open while recognition runs can starve it on Android Chrome. On `audio-capture` the waveform stream is released and recognition keeps going — the transcript matters more than the bars. The bars fall back to an idle animation so the screen still reads as listening.
+3. **`no-speech` is not a failure.** Chrome ends a session after a short silence. That used to flip straight to the typed fallback, which is why voice appeared dead — the fallback took over before you'd finished speaking. Sessions now restart (up to 8×) and typing is only offered after a 12s grace period, alongside a **Try speaking again** button (a fresh tap = a fresh gesture = a fresh shot at the mic).
+
+Only a genuine permission refusal is treated as terminal. An insecure origin is now named explicitly rather than blamed on the user — see the secure-context note under *Run locally*.
 
 ## Font
 

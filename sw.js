@@ -2,7 +2,8 @@
    NETWORK-FIRST for the shell; /api/* is never cached (it must reach
    the live serverless function each time). */
 
-const CACHE = "osp-shell-v4";
+/* bump the cache name whenever the shell changes, or clients keep the old one */
+const CACHE = "osp-shell-v5";
 const SHELL = [
   "./",
   "./index.html",
@@ -15,7 +16,9 @@ const SHELL = [
   "./js/app.js",
   "./manifest.webmanifest",
   "./assets/icon-192.png",
-  "./assets/icon-512.png"
+  "./assets/icon-512.png",
+  "./assets/osp-logo.svg",
+  "./assets/wallpaper.jpg"
 ];
 
 self.addEventListener("install", (e) => {

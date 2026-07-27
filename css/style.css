@@ -14,6 +14,16 @@
   --chat-green: #25d366;
   --radius-pill: 40px;
   --pad-screen: 24px;
+
+  /* Oversmart AI brand — matches assets/osp-logo.svg exactly */
+  --osp-navy: #000033;
+  --osp-cream: #ffffcc;
+
+  /* glassmorphism: one set of knobs for every swipe-in surface */
+  --glass-blur: 28px;
+  --glass-fill: rgba(255, 255, 255, 0.14);
+  --glass-scrim: rgba(10, 10, 20, 0.42);
+  --glass-edge: rgba(255, 255, 255, 0.22);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -230,6 +240,20 @@ button:focus-visible, input:focus-visible {
   font-size: 14px;
 }
 
+/* a fresh tap is a fresh user gesture — and so a fresh shot at the mic */
+.reason-retry {
+  margin: 0 var(--pad-screen) 40px;
+  padding: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--white);
+  font-size: 14px;
+}
+.reason-retry[hidden] { display: none; }
+
 /* ---------- home ---------- */
 
 .home-top {
@@ -244,16 +268,17 @@ button:focus-visible, input:focus-visible {
 .ai-search {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: calc(100% - 48px);
-  padding: 12px 16px;
+  padding: 8px 16px 8px 8px;
   border-radius: var(--radius-pill);
   background: var(--white);
   color: var(--gray-40);
   font-size: 16px;
   justify-content: center;
 }
-.ai-search__mic { width: 16px; height: 16px; }
+/* the mark carries its own #000033 field — no tint needed */
+.ai-search__mark { width: 32px; height: 32px; display: block; border-radius: 50%; }
 
 .dock {
   margin-top: auto;
@@ -274,14 +299,14 @@ button:focus-visible, input:focus-visible {
 .dock__app--periwinkle { background: var(--periwinkle); color: var(--white); }
 .dock__app--green { background: var(--chat-green); color: var(--white); }
 .dock__app--osp {
-  background: radial-gradient(circle at 35% 30%, #4a4a58, #17141d 70%);
+  background: var(--osp-navy);
+  overflow: hidden;
 }
-.dock__osp-dot {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  border: 2.5px solid var(--white);
+.dock__osp-mark {
+  width: 100%;
+  height: 100%;
   display: block;
+  border-radius: inherit;
 }
 .dock__app:active { transform: scale(0.94); }
 
@@ -331,15 +356,18 @@ button:focus-visible, input:focus-visible {
    OVERLAYS — the shades, the drawer, the AI sheet
    ============================================================ */
 
+/* Every swipe-in surface is frosted glass over the wallpaper: blur what's
+   behind, lift the saturation so the mountain's colour still reads through,
+   then a scrim so white type stays legible. */
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 30;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  background: var(--glass-scrim);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
   visibility: hidden;
   pointer-events: none;
   transition: transform 260ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms ease, visibility 0s 260ms;
@@ -353,7 +381,7 @@ button:focus-visible, input:focus-visible {
 .overlay--top { transform: translateY(-100%); }
 .overlay--top.is-open { transform: translateY(0); }
 
-.overlay--bottom { transform: translateY(100%); background: rgba(0, 0, 0, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.overlay--bottom { transform: translateY(100%); }
 .overlay--bottom.is-open { transform: translateY(0); }
 
 .overlay--dissolve { opacity: 0; transform: none; background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
@@ -398,17 +426,22 @@ button:focus-visible, input:focus-visible {
   flex-direction: column;
   gap: 8px;
 }
+/* light glass pills — fill kept high enough that #1a1a1a type still reads
+   against the dark half of the wallpaper */
 .notif {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #1a1a1a;
   font-size: 12px;
 }
-.notif--maybe { background: var(--white-60); }
+.notif--maybe { background: rgba(255, 255, 255, 0.82); }
 .notif__icon { width: 24px; height: 24px; flex-shrink: 0; }
 
 /* ---------- quick settings ---------- */
@@ -435,12 +468,15 @@ button:focus-visible, input:focus-visible {
   gap: 8px;
   padding: 12px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: var(--white);
   font-size: 12px;
 }
 .tile svg { width: 32px; height: 32px; }
-.tile.is-on { background: rgba(255, 255, 255, 0.35); color: #111; }
+.tile.is-on { background: rgba(255, 255, 255, 0.68); color: #111; }
 
 .tools__sliders {
   display: flex;
@@ -449,7 +485,10 @@ button:focus-visible, input:focus-visible {
 .vslider {
   width: 40px;
   border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   overflow: hidden;
   position: relative;
   touch-action: none;
@@ -478,7 +517,6 @@ button:focus-visible, input:focus-visible {
   flex-direction: column;
   gap: 24px;
   padding: 56px 24px 0;
-  background: rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 .drawer__title {
@@ -498,8 +536,13 @@ button:focus-visible, input:focus-visible {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
 }
+/* frosted card, not a solid slab — the mountain reads through the edges
+   while the fill stays high enough for the black type on top */
 .appcard {
-  background: #e6e6e6;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 16px;
   display: flex;
@@ -541,13 +584,16 @@ button:focus-visible, input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
+  gap: 12px;
+  padding: 16px 24px 16px 16px;
   border-radius: var(--radius-pill);
-  background: #333333;
-  color: var(--white);
+  background: var(--osp-navy);
+  color: var(--osp-cream);
   font-size: 20px;
 }
 .ai-pill svg { width: 24px; height: 24px; }
+.ai-pill__mark { width: 40px; height: 40px; display: block; border-radius: 50%; flex-shrink: 0; }
+.ai-pill #ai-pill-label { flex: 1; text-align: left; }
 
 /* ============================================================
    OVERSMART AI SHEET — voice in, answer out
