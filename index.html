@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#0b0b0f" />
+  <title>Oversmart Phone</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ LOCK SCREEN ============ -->
+  <section id="screen-lock" class="screen wallpaper is-active" aria-label="Lock screen">
+    <header class="statusbar statusbar--right">
+      <span class="statusbar__icons" aria-hidden="true">
+        <svg class="si" viewBox="0 0 24 24"><path d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Zm-4.4-4.6a6.4 6.4 0 0 1 8.8 0l-1.5 1.6a4.2 4.2 0 0 0-5.8 0l-1.5-1.6ZM4.5 12.3a10.8 10.8 0 0 1 15 0l-1.5 1.6a8.6 8.6 0 0 0-12 0l-1.5-1.6Z" fill="currentColor"/></svg>
+        <svg class="si" viewBox="0 0 24 24"><path d="M4 18h2.5v-4H4v4Zm5 0h2.5v-8H9v8Zm5 0h2.5V6H14v12Zm5 0h2.5V3H19v15Z" fill="currentColor"/></svg>
+        <svg class="si" viewBox="0 0 24 24"><rect x="3" y="8" width="15" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="19.5" y="10.5" width="2" height="3" rx="1" fill="currentColor"/><rect id="battery-fill-lock" x="4.5" y="9.5" width="9" height="5" rx="1" fill="currentColor"/></svg>
+      </span>
+      <span class="statusbar__battery" data-battery>75%</span>
+    </header>
+
+    <div class="lock-clock">
+      <div class="lock-clock__row">
+        <span class="lock-clock__big" data-mins-since>00</span>
+        <span class="lock-clock__time" data-time-words>Fifteen<br/>thirty-four</span>
+      </div>
+      <p class="lock-clock__label">Mins since you last checked your phone</p>
+    </div>
+
+    <button class="notif-pill" id="notif-pill">You may have notifications</button>
+
+    <footer class="lock-footer">
+      <button class="lock-footer__btn" aria-label="Assistant" data-shortcut="assistant">
+        <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="lock-footer__fp" id="unlock-trigger" aria-label="Unlock">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 4a8 8 0 0 0-8 8c0 2.5.8 4.4 1.6 5.8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M12 7a5 5 0 0 0-5 5c0 2 .5 3.6 1.2 4.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M12 10a2 2 0 0 0-2 2c0 1.8.4 3.4 1 4.7" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M12 13v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M20 12a8 8 0 0 0-4-6.9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M17 12a5 5 0 0 0-1.5-3.6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <button class="lock-footer__btn" aria-label="Camera" data-shortcut="camera">
+        <svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-1.6A1 1 0 0 1 10 4h4a1 1 0 0 1 .8.4L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+    </footer>
+  </section>
+
+  <!-- ============ STATE YOUR REASON ============ -->
+  <section id="screen-reason" class="screen wallpaper wallpaper--blur" aria-label="State your reason to unlock">
+    <header class="statusbar statusbar--right">
+      <span class="statusbar__icons" aria-hidden="true">
+        <svg class="si" viewBox="0 0 24 24"><path d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Zm-4.4-4.6a6.4 6.4 0 0 1 8.8 0l-1.5 1.6a4.2 4.2 0 0 0-5.8 0l-1.5-1.6ZM4.5 12.3a10.8 10.8 0 0 1 15 0l-1.5 1.6a8.6 8.6 0 0 0-12 0l-1.5-1.6Z" fill="currentColor"/></svg>
+        <svg class="si" viewBox="0 0 24 24"><path d="M4 18h2.5v-4H4v4Zm5 0h2.5v-8H9v8Zm5 0h2.5V6H14v12Zm5 0h2.5V3H19v15Z" fill="currentColor"/></svg>
+      </span>
+      <span class="statusbar__battery" data-battery>75%</span>
+    </header>
+
+    <h1 class="reason-title">State your reason for unlocking your phone</h1>
+
+    <div class="waveform" id="waveform" aria-hidden="true">
+      <!-- bars injected by js -->
+    </div>
+
+    <p class="reason-hint" id="reason-hint">Listening…</p>
+
+    <form class="reason-fallback" id="reason-fallback" hidden>
+      <input type="text" id="reason-input" placeholder="Type your reason" autocomplete="off" />
+      <button type="submit">Submit for review</button>
+    </form>
+  </section>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <section id="screen-home" class="screen wallpaper" aria-label="Home screen">
+    <header class="statusbar statusbar--split">
+      <span class="statusbar__timewords" data-time-words-inline>Fifteen thirty-five&nbsp;&nbsp;…</span>
+      <span class="statusbar__right">
+        <span class="statusbar__icons" aria-hidden="true">
+          <svg class="si" viewBox="0 0 24 24"><path d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Zm-4.4-4.6a6.4 6.4 0 0 1 8.8 0l-1.5 1.6a4.2 4.2 0 0 0-5.8 0l-1.5-1.6ZM4.5 12.3a10.8 10.8 0 0 1 15 0l-1.5 1.6a8.6 8.6 0 0 0-12 0l-1.5-1.6Z" fill="currentColor"/></svg>
+          <svg class="si" viewBox="0 0 24 24"><path d="M4 18h2.5v-4H4v4Zm5 0h2.5v-8H9v8Zm5 0h2.5V6H14v12Zm5 0h2.5V3H19v15Z" fill="currentColor"/></svg>
+        </span>
+        <span class="statusbar__battery" data-battery>75%</span>
+      </span>
+    </header>
+
+    <div class="home-top">
+      <div class="lock-clock lock-clock--home">
+        <div class="lock-clock__row">
+          <span class="lock-clock__big" data-mins-since>00</span>
+          <span class="lock-clock__time" data-time-words>Fifteen<br/>thirty-four</span>
+        </div>
+        <p class="lock-clock__label">Mins since you last checked your phone</p>
+      </div>
+
+      <button class="ai-search" id="ai-search">
+        <svg viewBox="0 0 24 24" class="ai-search__mic"><path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 12a5.5 5.5 0 0 0 11 0M12 17.5V20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span>Search with Oversmart AI</span>
+      </button>
+    </div>
+
+    <nav class="dock" aria-label="Dock">
+      <button class="dock__app dock__app--white" data-app="photos" aria-label="Photos">
+        <svg viewBox="0 0 24 24"><path d="M4 8a2 2 0 0 1 2-2h2l1.2-1.6A1 1 0 0 1 10 4h4a1 1 0 0 1 .8.4L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12.5" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+      <button class="dock__app dock__app--periwinkle" data-app="phone" aria-label="Phone">
+        <svg viewBox="0 0 24 24"><path d="M6.6 4.5h2.6l1.3 3.6-1.8 1.4a12 12 0 0 0 5.8 5.8l1.4-1.8 3.6 1.3v2.6a1.7 1.7 0 0 1-1.8 1.7A14.9 14.9 0 0 1 4.9 6.3a1.7 1.7 0 0 1 1.7-1.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="dock__app dock__app--osp" data-app="oversmart" aria-label="Oversmart">
+        <span class="dock__osp-dot"></span>
+      </button>
+      <button class="dock__app dock__app--green" data-app="chat" aria-label="Messages">
+        <svg viewBox="0 0 24 24"><path d="M12 4.5a7.5 7.5 0 0 0-6.4 11.4L4.5 19.5l3.8-1A7.5 7.5 0 1 0 12 4.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </nav>
+
+    <div class="gesture-bar" aria-hidden="true"></div>
+  </section>
+
+  <!-- ============ NOTIFICATION SHADE (pull down, top-left) ============ -->
+  <section id="overlay-notifs" class="overlay overlay--top" aria-label="Notification center">
+    <header class="statusbar statusbar--right">
+      <span class="statusbar__battery" data-battery>75%</span>
+    </header>
+    <div class="shade">
+      <div class="shade__head">
+        <div>
+          <p class="shade__usage"><span data-usage-mins>15</span> mins</p>
+          <p class="shade__usage-label">of phone usage</p>
+        </div>
+        <p class="shade__time" data-time-words>Fifteen<br/>thirty-four</p>
+      </div>
+      <div class="shade__list">
+        <div class="notif notif--maybe">
+          <svg class="notif__icon" viewBox="0 0 24 24"><path d="M12 4.5a7.5 7.5 0 0 0-6.4 11.4L4.5 19.5l3.8-1A7.5 7.5 0 1 0 12 4.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <p>You might have a new notification</p>
+        </div>
+        <div class="notif">
+          <svg class="notif__icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16.6" cy="7.4" r="1" fill="currentColor"/></svg>
+          <p>You have no new notifications</p>
+        </div>
+        <div class="notif">
+          <svg class="notif__icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 9.8c2.6-.8 5-.6 7 .6M9 12.4c2-.6 3.9-.4 5.6.5M9.6 15c1.5-.4 2.9-.3 4.2.4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          <p>You have no new notifications</p>
+        </div>
+        <div class="notif">
+          <svg class="notif__icon" viewBox="0 0 24 24"><path d="M8.5 6h7l4 7-3.5 6h-8L4.5 13l4-7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <p>You have no new notifications</p>
+        </div>
+        <div class="notif">
+          <svg class="notif__icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <p>You have no new notifications</p>
+        </div>
+      </div>
+    </div>
+    <div class="overlay__grip" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ QUICK SETTINGS (pull down, top-right) ============ -->
+  <section id="overlay-tools" class="overlay overlay--top" aria-label="Quick settings">
+    <header class="statusbar statusbar--right">
+      <span class="statusbar__battery" data-battery>75%</span>
+    </header>
+    <div class="shade">
+      <div class="shade__head">
+        <div>
+          <p class="shade__usage"><span data-usage-mins>15</span> mins</p>
+          <p class="shade__usage-label">of phone usage</p>
+        </div>
+        <p class="shade__time" data-time-words>Fifteen<br/>thirty-four</p>
+      </div>
+      <div class="tools">
+        <div class="tools__grid">
+          <button class="tile is-on" data-tile="wifi"><svg viewBox="0 0 24 24"><path d="M12 20a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2Zm-4.4-4.6a6.4 6.4 0 0 1 8.8 0l-1.5 1.6a4.2 4.2 0 0 0-5.8 0l-1.5-1.6ZM4.5 12.3a10.8 10.8 0 0 1 15 0l-1.5 1.6a8.6 8.6 0 0 0-12 0l-1.5-1.6Z" fill="currentColor"/></svg><span>Wi-Fi</span></button>
+          <button class="tile" data-tile="bluetooth"><svg viewBox="0 0 24 24"><path d="M11.5 3.5l5 4-5 4.5 5 4.5-5 4v-17ZM11.5 12 6.5 7.8M11.5 12l-5 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/></svg><span>Bluetooth</span></button>
+          <button class="tile is-on" data-tile="location"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-10.5a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10.5" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span>Location</span></button>
+          <button class="tile" data-tile="mode"><svg viewBox="0 0 24 24"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5 7.5 7.5 0 1 0 19 14.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span>Mode</span></button>
+          <button class="tile" data-tile="rotate"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="10" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M18 8a4 4 0 0 1 3 4M21 12l-1.6-1.4M21 12l1.4-1.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Auto-rotate</span></button>
+          <button class="tile" data-tile="vibrate"><svg viewBox="0 0 24 24"><rect x="8" y="4" width="8" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 9v6M19.5 9v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>Vibrate</span></button>
+          <button class="tile" data-tile="airplane"><svg viewBox="0 0 24 24"><path d="M10.5 13.5 4 11l1-1.8 6.5.8 4-5.5c.5-.7 1.6-.8 2.2-.2.6.6.5 1.7-.2 2.2l-5.5 4 .8 6.5-1.8 1-2.5-6.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><span>Airplane Mode</span></button>
+          <button class="tile" data-tile="hotspot"><svg viewBox="0 0 24 24"><rect x="8" y="4" width="8" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="15" r="1.2" fill="currentColor"/></svg><span>Hotspot</span></button>
+        </div>
+        <div class="tools__sliders">
+          <div class="vslider" data-slider="brightness">
+            <div class="vslider__fill">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <div class="vslider" data-slider="volume">
+            <div class="vslider__fill">
+              <svg viewBox="0 0 24 24"><path d="M5 10v4h3l4 3.5v-11L8 10H5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15.5 9.5a4 4 0 0 1 0 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay__grip" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ APP DRAWER (swipe up on home) ============ -->
+  <section id="overlay-drawer" class="overlay overlay--bottom" aria-label="App drawer">
+    <div class="drawer">
+      <p class="drawer__title">All Apps</p>
+      <div class="drawer__feed" id="drawer-feed">
+        <!-- cards injected by js -->
+      </div>
+    </div>
+    <div class="overlay__grip" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ============ OVERSMART AI SHEET ============ -->
+  <section id="overlay-ai" class="overlay overlay--dissolve" aria-label="Oversmart AI">
+    <div class="ai-sheet">
+      <p class="ai-sheet__you" id="ai-you"></p>
+      <div class="ai-sheet__answer" id="ai-answer"></div>
+      <div class="ai-waveform" id="ai-waveform" aria-hidden="true"></div>
+      <p class="ai-sheet__status" id="ai-status">Tap to speak. Oversmart AI is listening for what you meant.</p>
+    </div>
+    <button class="ai-pill" id="ai-pill">
+      <span id="ai-pill-label">Ask Oversmart AI</span>
+      <svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 12a5.5 5.5 0 0 0 11 0M12 17.5V20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </section>
+
+  <!-- Deadpan system toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/timewords.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/unlock.js"></script>
+  <script src="js/overlays.js"></script>
+  <script src="js/oversmart-ai.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
