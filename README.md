@@ -19,7 +19,8 @@ This is the v1 shell: **Lock → State Your Reason → Home**, built as a fullsc
 | Notification shade | Pull down from top-left (or tap the pill). "You might have a new notification" — nothing resolves. Header shows **real** minutes of usage today. |
 | Quick settings | Pull down from top-right. Tile grid + two vertical sliders; the brightness slider **really dims the OS** (CSS `brightness()` filter on `body`) — this is the mount point for brightness-by-battery. |
 | App drawer as feed | Swipe up on Home. Apps rendered as social posts: hero, like, trash, open-arrow, "Last checked Xm ago" (live once opened this session). Trash: "cannot be uninstalled at this time." |
-| Oversmart AI sheet | Center dock button or the search bar → dissolve overlay with the "Ask Oversmart AI" pill. |
+| Oversmart AI sheet | Center dock button or the search bar → dissolve overlay. **Speak or type** — see below. |
+| Autocomplete ("it knows what you want to say") | Real. Type one character into the Ask bar and the phone finishes the sentence in dim ghost text. Accept with Tab / → / the button. Press Enter and it submits **its** sentence, not yours. |
 
 ## Gesture map (mirrors the Figma prototype wiring)
 
@@ -35,6 +36,18 @@ This is the v1 shell: **Lock → State Your Reason → Home**, built as a fullsc
 `assets/wallpaper.jpg` (the Ama Dablam photo) and `assets/osp-logo.svg` are both in place. Every swipe-in surface — app drawer, notification shade, quick settings — is frosted glass over that wallpaper: `backdrop-filter: blur() saturate()` plus a scrim, tuned from four tokens at the top of `style.css` (`--glass-blur`, `--glass-fill`, `--glass-scrim`, `--glass-edge`). Panel fills are deliberately kept high enough that the dark type on the notification pills and app cards stays legible against the dark half of the photo.
 
 `osp-logo.svg` is the real mark and carries its own colours — `#000033` field, `#FFFFCC` spiral — so it's dropped in as `<img>` and never tinted. It appears in three places: the home search pill, the centre dock button, and the Ask Oversmart AI pill. The same two colours are exposed as `--osp-navy` / `--osp-cream` for anything else that needs them.
+
+## Oversmart AI: speak *or* type
+
+The Ask bar is no longer a single button — it's a text field with a mic beside it, so the sheet demos with or without a working microphone (useful in a room where speaking aloud isn't practical).
+
+Typing is where the **autocomplete** dark pattern executes. `Autocomplete` at the top of `js/oversmart-ai.js` holds the sentence bank; every completion is something the phone would rather you were asking — more self-doubt, more dependence, more time on the device. Mechanics:
+
+- It completes after **one character**, not three — the point is that it presumes before you've committed to anything.
+- The suggestion renders as ghost text on a layer under the input. The typed portion is transparent and both layers share font metrics, so the completion sits exactly where your next keystroke would land. (If you restyle the bar, change **both** `.ai-ghost` and `.ai-input` or the suggestion drifts out of alignment.)
+- **Tab**, **→**, or the tap-target below the bar accepts it. Your own capitalisation is preserved — only the remainder is appended, so accepting doesn't rewrite what you wrote.
+- **Enter submits the phone's sentence, not yours**, and says so afterwards ("You were going to say that. Oversmart AI finished it."). That's the pattern executing rather than being illustrated.
+- It stops presuming while the caret is mid-string (it would otherwise suggest into the middle of an edit), and once you've accepted a complete sentence it lets it stand. Type something it doesn't recognise and it still finishes it — generically, and with total confidence.
 
 ## Voice on the reason screen
 

@@ -102,11 +102,9 @@
     });
   });
 
-  /* ---------- AI sheet ---------- */
-
-  document.getElementById("ai-pill").addEventListener("click", () => {
-    OversmartAI.onPill();
-  });
+  /* ---------- AI sheet ----------
+     The bar now holds a text field, so it can't be one big button any more.
+     OversmartAI binds its own mic / send / accept / keyboard handlers. */
 
   /* ---------- app drawer feed events ---------- */
 
@@ -144,7 +142,8 @@
       Store.markPutDown();
       Unlock.cancel();
       Overlays.close();
-      if (window.OversmartAI) OversmartAI.reset();
+      /* script-scoped const — not a window property (see overlays.js note) */
+      if (typeof OversmartAI !== "undefined") OversmartAI.reset();
       show("lock");
       tick();
     } else {

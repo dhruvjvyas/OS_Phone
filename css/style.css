@@ -49,6 +49,13 @@ button {
   color: inherit;
   cursor: pointer;
 }
+/* body sets user-select:none and touch-action:none for the gesture layer —
+   text fields have to opt back in or the caret and keyboard misbehave */
+input {
+  -webkit-user-select: text;
+  user-select: text;
+  touch-action: auto;
+}
 button:focus-visible, input:focus-visible {
   outline: 2px solid var(--white);
   outline-offset: 2px;
@@ -583,9 +590,8 @@ button:focus-visible, input:focus-visible {
   width: min(364px, calc(100% - 48px));
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 24px 16px 16px;
+  gap: 10px;
+  padding: 12px 16px 12px 12px;
   border-radius: var(--radius-pill);
   background: var(--osp-navy);
   color: var(--osp-cream);
@@ -593,7 +599,75 @@ button:focus-visible, input:focus-visible {
 }
 .ai-pill svg { width: 24px; height: 24px; }
 .ai-pill__mark { width: 40px; height: 40px; display: block; border-radius: 50%; flex-shrink: 0; }
-.ai-pill #ai-pill-label { flex: 1; text-align: left; }
+
+/* ---- speak OR type ----
+   The ghost layer sits exactly under the input: the part you've typed is
+   rendered transparent, the part the phone has decided you meant is dim.
+   Both layers MUST share font metrics or the suggestion drifts out of line. */
+.ai-field {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  display: flex;
+  align-items: center;
+}
+.ai-ghost,
+.ai-input {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 26px;
+  letter-spacing: normal;
+  padding: 0;
+  border: 0;
+}
+.ai-ghost {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  white-space: pre;
+  overflow: hidden;
+  color: rgba(255, 255, 204, 0.42);
+}
+.ai-ghost__typed { color: transparent; }
+.ai-input {
+  position: relative;
+  width: 100%;
+  background: none;
+  color: var(--osp-cream);
+  caret-color: var(--osp-cream);
+  outline: none;
+}
+.ai-input::placeholder { color: rgba(255, 255, 204, 0.5); }
+
+.ai-icon-btn {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: var(--osp-cream);
+  border-radius: 50%;
+}
+.ai-icon-btn:active { opacity: 0.6; }
+.ai-icon-btn.is-recording { color: #ff6b6b; }
+
+/* the suggestion is only acceptable if you can reach it with a thumb */
+.ai-accept {
+  margin: 10px auto 0;
+  width: min(364px, calc(100% - 48px));
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-edge);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--white);
+  font-size: 13px;
+  text-align: center;
+}
+.ai-accept[hidden] { display: none; }
 
 /* ============================================================
    OVERSMART AI SHEET — voice in, answer out
@@ -662,4 +736,4 @@ button:focus-visible, input:focus-visible {
 .ai-sheet__status:empty { display: none; }
 
 .ai-pill.is-busy { opacity: 0.6; pointer-events: none; }
-.ai-pill.is-listening { background: #4a4a58; }
+.ai-pill.is-listening { background: #14143d; box-shadow: 0 0 0 2px rgba(255, 255, 204, 0.35); }

@@ -270,7 +270,10 @@ const Overlays = (() => {
 
   document.addEventListener("overlay:open", (e) => {
     if (e.detail === "drawer") renderFeed();
-    if (e.detail === "ai" && window.OversmartAI) OversmartAI.reset();
+    /* NB: `const OversmartAI` in a classic script lives in script scope, NOT
+       on window — `window.OversmartAI` is always undefined, so this guard
+       used to silently skip the reset and stale answers persisted. */
+    if (e.detail === "ai" && typeof OversmartAI !== "undefined") OversmartAI.reset();
   });
 
   return { open, close, isOpen };
